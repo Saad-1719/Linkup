@@ -14,7 +14,7 @@ const RightSideBar = () => {
 				<h3 className="font-medium flex gap-x-1 mx-0 my-1 text-center items-center justify-center text-lg">
 					Richard <img src={assets.green_dot} alt="" />
 				</h3>
-				<p className="text-xs opacity-80 ">Lorem ipsum dolor sit amet consectetur.</p>
+				<p className="text-sm opacity-80 ">Lorem ipsum dolor sit amet consectetur.</p>
 			</div>
 			<hr className="border-gray-500 my-4 mx-0" />
 			<div className="py-0 px-5">
@@ -27,7 +27,7 @@ const RightSideBar = () => {
 					<img src={assets.pic1} className="rounded-md cursor-pointer" alt="" />
 					<img src={assets.pic2} className="rounded-md cursor-pointer" alt="" />
 				</div>
-				<button className=" bg-sky-800 hover:bg-sky-600 transition-all text-xl rounded-full items-end justify-center mt-5 px-20 py-2 leading-2 absolute bottom-5 left-[50%] translate-x-[-50%] " onClick={()=>logout()}>Logout</button>
+				<button className=" bg-sky-800 hover:bg-sky-600 transition-all text-xl rounded-lg items-end justify-center mt-5 px-20 py-2 leading-2 absolute bottom-5 left-[50%] translate-x-[-50%] " onClick={()=>logout()}>Logout</button>
 			</div>
 		</div>
 	);
