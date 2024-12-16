@@ -32,13 +32,13 @@ const signup = async (username, email, password) => {
             email,
             name: "",
             avatar: "",
-            bio: "Hey, I am using Likup",
+            bio: "Hey, I am using Linkup",
             lastSeen: Date.now(),
         });
 
         // Create chats document for the user
         await setDoc(doc(db, "chats", user.uid), {
-            chatData: []
+            chatsData: []
         });
 toast.success("Account created successfully!");
         return user; // Optionally return the user object
