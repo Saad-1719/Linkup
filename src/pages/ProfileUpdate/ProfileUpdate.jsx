@@ -179,19 +179,19 @@ const ProfileUpdate = () => {
             onChange={(e) => setName(e.target.value)}
             placeholder="Your name"
             required
-            className="p-3 min-w-72 border-[1px] border-gray-400 outline-blue-700"
+            className="p-3 min-w-72 border-[1px] border-gray-400 outline-blue-700 rounded-lg"
           />
           <textarea
             placeholder="Write profile bio"
             required
             value={bio}
             onChange={(e) => setBio(e.target.value)}
-            className="p-3 min-w-72 border-[1px] border-gray-400 outline-blue-700"
+            className="p-3 min-w-72 border-[1px] border-gray-400 outline-blue-700 rounded-lg"
           ></textarea>
           <button
             type="submit"
             disabled={uploading}
-            className="text-white bg-blue-600 p-2 cursor-pointer hover:bg-blue-700 transition-all ease-in-out disabled:opacity-50"
+            className="text-white bg-blue-600 p-2 cursor-pointer hover:bg-blue-700 transition-all ease-in-out disabled:opacity-50 rounded-lg"
           >
             {uploading ? "Updating..." : "Save"}
           </button>
