@@ -1,41 +1,44 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import Login from "./pages/Login/Login";
 import Chat from "./pages/Chat/Chat";
 import ProfileUpdate from "./pages/ProfileUpdate/ProfileUpdate";
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./config/firebase";
+import { AppContext } from "./context/AppContext";
 
-const App = () =>
-{
+const App = () => {
+    const navigate = useNavigate();
+    const { loadUserData } = useContext(AppContext);
 
-	const navigate = useNavigate();
-	useEffect(() =>
-	{
-		onAuthStateChanged(auth, async (user) =>
-		{
-			if (user) {
-				navigate('/chat')
-				console.log(user);
-			} else {
-				navigate('/')
-			}
-		})
-	},[])
+    useEffect(() => {
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const isProfileComplete = await loadUserData(user.uid);
+                if (isProfileComplete && window.location.pathname !== '/profile') {
+                    navigate('/chat');
+                } else if (!isProfileComplete && window.location.pathname !== '/profile') {
+                    navigate('/profile');
+                }
+            } else {
+                navigate('/');
+            }
+        });
+    }, []);
 
-
-	return (
-    <>
-      <ToastContainer/>
-			<Routes>
-				<Route path="/" element={<Login />} />
-				<Route path="/chat" element={<Chat />} />
-				<Route path="/profile" element={<ProfileUpdate />} />
-			</Routes>
-		</>
-	);
+    return (
+        <>
+            <ToastContainer />
+            <Routes>
+                <Route path="/" element={<Login />} />
+                <Route path="/chat" element={<Chat />} />
+                <Route path="/profile" element={<ProfileUpdate />} />
+            </Routes>
+        </>
+    );
 };
 
 export default App;
+
