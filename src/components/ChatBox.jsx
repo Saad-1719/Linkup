@@ -1,7 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
 import assets from "../assets/assets";
 import { AppContext } from "../context/AppContext";
-import { arrayUnion, doc, getDoc, onSnapshot, updateDoc } from "firebase/firestore";
+import {
+	arrayUnion,
+	doc,
+	getDoc,
+	onSnapshot,
+	updateDoc,
+} from "firebase/firestore";
 import { db } from "../config/firebase";
 import { toast } from "react-toastify";
 
@@ -9,66 +15,81 @@ const ChatBox = () => {
 	const { userData, messagesId, chatUser, messages, setMessages } =
 		useContext(AppContext);
 	const [input, setInput] = useState("");
-	
-	
-	const sendMessage = async () =>
-	{
+
+	const sendMessage = async () => {
 		try {
-		  if (input && messagesId) {
-			const messageDocRef = doc(db, 'messages', messagesId);
-			await updateDoc(messageDocRef, {
-			  messages: arrayUnion({
-				sId: userData.id,
-				text: input,
-				createdAt: new Date()
-			  })
-			});
-	
-			const userIDs = [chatUser.rId, userData.id];
-	
-			userIDs.forEach(async (id) => {
-			  const userChatsRef = doc(db, 'chats', id);
-			  const userChatsSnapshot = await getDoc(userChatsRef);
-	
-			  if (userChatsSnapshot.exists()) {
-				const userChatData = userChatsSnapshot.data();
-				const chatIndex = userChatData.chatsData.findIndex((c) => c.messageId === messagesId);
-				userChatData.chatsData[chatIndex].lastMessage = input.slice(0, 30);
-				userChatData.chatsData[chatIndex].updatedAt = Date.now();
-				if (userChatData.chatsData[chatIndex].rId === userData.id) {
-				  userChatData.chatsData[chatIndex].messageSeen = false;
-				}
-				await updateDoc(userChatsRef, {
-				  chatsData: userChatData.chatsData
+			if (input && messagesId) {
+				const messageDocRef = doc(db, "messages", messagesId);
+				await updateDoc(messageDocRef, {
+					messages: arrayUnion({
+						sId: userData.id,
+						text: input,
+						createdAt: new Date(),
+					}),
 				});
-			  }
-			});
-	
-		  }
+
+				const userIDs = [chatUser.rId, userData.id];
+
+				userIDs.forEach(async (id) => {
+					const userChatsRef = doc(db, "chats", id);
+					const userChatsSnapshot = await getDoc(userChatsRef);
+
+					if (userChatsSnapshot.exists()) {
+						const userChatData = userChatsSnapshot.data();
+						const chatIndex = userChatData.chatsData.findIndex(
+							(c) => c.messageId === messagesId
+						);
+						userChatData.chatsData[chatIndex].lastMessage = input.slice(0, 30);
+						userChatData.chatsData[chatIndex].updatedAt = Date.now();
+						if (userChatData.chatsData[chatIndex].rId === userData.id) {
+							userChatData.chatsData[chatIndex].messageSeen = false;
+						}
+						await updateDoc(userChatsRef, {
+							chatsData: userChatData.chatsData,
+						});
+					}
+				});
+			}
 		} catch (error) {
-		  toast.error(error.message);
+			toast.error(error.message);
 		}
-	  };
+		setInput("");
+	};
+
+	const convertTimeStamp = (Timestamp) => {
+		let date = Timestamp.toDate();
+		const hour = date.getHours();
+		const minute = date.getMinutes();
+		if (hour > 12) {
+			return hour - 12 + ":" + minute + "PM";
+		} else {
+			return hour + ":" + minute + "AM";
+		}
+	};
 
 	useEffect(() => {
 		if (messagesId) {
-		  const unSub = onSnapshot(doc(db, 'messages', messagesId), (snapshot) => {
-			if (snapshot.exists()) {
-			  setMessages(snapshot.data().messages.reverse());
-			}
-		  });
-		  return () => {
-			unSub();
-		  }
+			const unSub = onSnapshot(doc(db, "messages", messagesId), (snapshot) => {
+				if (snapshot.exists()) {
+					setMessages(snapshot.data().messages.reverse());
+				}
+			});
+			return () => {
+				unSub();
+			};
 		}
-	  }, [messagesId])
+	}, [messagesId]);
 
-	return chatUser? (
+	return chatUser ? (
 		<div className="h-[85vh] relative bg-sky-200">
 			<div className="py-3 px-4 flex items-center gap-3 border-b-black border-2">
-				<img src={chatUser.userData.avatar} alt="" className="rounded-full w-10 h-auto aspect-square" />
+				<img
+					src={chatUser.userData.avatar}
+					alt=""
+					className="rounded-full w-10 h-auto aspect-square"
+				/>
 				<p className="flex gap-x-3 font-semibold text-lg flex-1 items-center ">
-					{ chatUser.userData.name}{" "}
+					{chatUser.userData.name}{" "}
 					<img
 						src={assets.green_dot}
 						alt=""
@@ -83,48 +104,38 @@ const ChatBox = () => {
 			</div>
 			{/* chat area */}
 			<div className="pb-[50px] h-[calc(100%-70px)] overflow-y-scroll flex flex-col-reverse no-scrollbar">
-				{/* sender message */}
-				<div className=" flex items-end justify-end gap-1 py-0 px-4">
-					<p className="text-white bg-sky-500 p-2 max-w-48 text-base mb-7 rounded-tr-lg rounded-tl-lg rounded-bl-lg">
-						Lorem ipsum dolor sit.
-					</p>
-					<div className="text-center text-[11px]">
-						<img
-							src={assets.profile_img}
-							alt=""
-							className="w-6 rounded-full aspect-square"
-						/>
-						<p>2:30 PM</p>
-					</div>
-				</div>
-
-				{/* send image */}
-
-				<div className=" flex items-end justify-end gap-1 py-0 px-4">
-					<img src={assets.pic1} alt="" className="max-w-60 mb-8 rounded-lg" />
-					<div className="text-center text-[11px]">
-						<img
-							src={assets.profile_img}
-							alt=""
-							className="w-6 rounded-full aspect-square"
-						/>
-						<p>2:30 PM</p>
-					</div>
-				</div>
-				{/* receiver message */}
-				<div className="flex  flex-row  ">
-					<div className="flex flex-col items-end pl-3 pr-2 justify-end text-center text-[11px]">
-						<img
-							src={assets.profile_img}
-							alt=""
-							className="w-6 rounded-full  aspect-square"
-						/>
-						<p>2:30 PM</p>
-					</div>
-					<p className="text-white bg-sky-500 p-2 max-w-48 text-base mb-7 rounded-tr-lg rounded-tl-lg rounded-br-lg">
-						Lorem ipsum dolor sit.
-					</p>
-				</div>
+				{messages.map((msg, index) =>
+					msg.sId === userData.id ? (
+						<div
+							key={index}
+							className=" flex items-end justify-end gap-1 py-0 px-4"
+						>
+							<p className="text-white bg-sky-500 p-2 max-w-48 text-base mb-7 rounded-tr-lg rounded-tl-lg rounded-bl-lg">{msg.text}</p>
+							<div className="text-center text-[11px]">
+								<img
+									src={userData.avatar}
+									alt=""
+									className="w-6 rounded-full aspect-square"
+								/>
+								<p>{convertTimeStamp(msg.createdAt)}</p>
+							</div>
+						</div>
+					) : (
+						<div key={index} className="flex flex-row  ">
+							<div className="flex flex-col items-end pl-3 pr-2 justify-end text-center text-[11px]">
+								<img
+									src={chatUser.userData.avatar}
+									alt=""
+									className="w-6 rounded-full  aspect-square"
+								/>
+								<p>{convertTimeStamp(msg.createdAt)}</p>
+							</div>
+							<p className="text-white bg-sky-500 p-2 max-w-48 text-base mb-7 rounded-tr-lg rounded-tl-lg rounded-br-lg">
+								{msg.text}
+							</p>
+						</div>
+					)
+				)}
 			</div>
 
 			{/* //bottom */}
@@ -135,7 +146,7 @@ const ChatBox = () => {
 					placeholder="send a message"
 					className="outline-none flex-1"
 					value={input}
-					onChange={(e)=>setInput(e.target.value)}
+					onChange={(e) => setInput(e.target.value)}
 				/>
 				<input type="file" id="image" accept="image/png, image/jpeg" hidden />
 				<label htmlFor="image" className="flex ">
@@ -145,13 +156,20 @@ const ChatBox = () => {
 						className=" cursor-pointer w-5"
 					/>
 				</label>
-				<img src={assets.send_button} alt="" className="w-7 cursor-pointer" onClick={sendMessage}/>
+				<img
+					src={assets.send_button}
+					alt=""
+					className="w-7 cursor-pointer"
+					onClick={sendMessage}
+				/>
 			</div>
 		</div>
-	) : <div className="flex flex-col items-center justify-center">
-			<img src={assets.logo_icon} alt="" className="w-20 h-auto"/>
+	) : (
+		<div className="flex flex-col items-center justify-center">
+			<img src={assets.logo_icon} alt="" className="w-20 h-auto" />
 			<p>Chat Anytime,anywhere</p>
-	</div>
+		</div>
+	);
 };
 
 export default ChatBox;
