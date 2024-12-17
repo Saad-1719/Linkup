@@ -4,7 +4,7 @@ import { logout } from "../config/firebase";
 
 const RightSideBar = () => {
 	return (
-		<div className="text-white bg-slate-950 relative h-[75vh] overflow-y-scroll no-scrollbar">
+		<div className="text-white bg-slate-950 relative h-[85vh] overflow-y-scroll no-scrollbar">
 			<div className="pt-14 text-center max-w-[70%] m-auto flex flex-col items-center">
 				<img
 					src={assets.profile_img}
