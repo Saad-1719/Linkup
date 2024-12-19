@@ -20,7 +20,7 @@ const Chat = () =>
       {
         loading ?
           
-          <p>Loading ...</p> :
+          <span className="loader"></span> :
           
       <div className="w-[90%] h-[85vh] py-auto max-h-screena bg-blue-200  grid grid-cols-[1fr_2fr_1fr] rounded-lg">
         <LeftSideBar />
