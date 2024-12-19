@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import assests from "../../assets/assets";
-import { signup, login } from "../../config/firebase";
+import { signup, login,resetPass } from "../../config/firebase";
 import { toast } from "react-toastify";
 import { AppContext } from "../../context/AppContext";
 
@@ -41,7 +41,7 @@ const Login = () => {
   return (
     <div className="min-h-screen flex items-center justify-evenly bg-[url('./background.png')] bg-cover bg-no-repeat">
       <img src={assests.logo_big} alt="" className="max-w-64" />
-      <form onSubmit={onSubmitHandler} className="bg-white px-5 py-8 flex flex-col space-y-5 border rounded-lg">
+      <form onSubmit={onSubmitHandler} className="bg-white px-5 py-8 flex flex-col space-y-5 border rounded-lg min-w-[400px]">
         <h2 className="text-3xl font-bold text-center">{currentState}</h2>
         {currentState === "Sign up" && (
           <input
@@ -90,10 +90,6 @@ const Login = () => {
             "Login"
           )}
         </button>
-        <div className="flex space-x-4 items-center justify-center">
-          <input type="checkbox" name="" id="" className="w-4 h-4" disabled={isLoading} />
-          <p>Agree to the terms of use and privacy policy.</p>
-        </div>
         {currentState === "Sign up" ? (
           <div>
             <p>
@@ -102,7 +98,7 @@ const Login = () => {
                 className={`text-blue-500 underline cursor-pointer ${isLoading ? 'pointer-events-none' : ''}`}
                 onClick={() => !isLoading && setCurrentState("Login")}
               >
-                click here
+                Click Here
               </span>
             </p>
           </div>
@@ -114,11 +110,20 @@ const Login = () => {
                 className={`text-blue-500 underline cursor-pointer ${isLoading ? 'pointer-events-none' : ''}`}
                 onClick={() => !isLoading && setCurrentState("Sign up")}
               >
-                click here
+                Click Here
               </span>
             </p>
           </div>
-        )}
+			  )}
+			  {currentState === 'Login' ? <p>
+              Forgot Password? {" "}
+              <span
+                className={`text-blue-500 underline cursor-pointer ${isLoading ? 'pointer-events-none' : ''}`}
+                onClick={() => !isLoading && resetPass(email)}
+              >
+                Reset Here
+              </span>
+            </p> :null}
       </form>
     </div>
   );

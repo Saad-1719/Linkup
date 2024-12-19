@@ -283,12 +283,13 @@ const ChatBox = () => {
           className="rounded-full w-10 h-auto aspect-square"
         />
         <p className="flex gap-x-3 font-semibold text-lg flex-1 items-center ">
-          {chatUser.userData.name}{" "}
-          <img
+				  {chatUser.userData.name}{" "}
+				  {Date.now()-chatUser.userData.lastSeen <= 70000 ?<img
             src={assets.green_dot}
             alt=""
             className="rounded-full w-4 items-center"
-          />
+          /> :" "}
+          
         </p>
         <img
           src={assets.help_icon}

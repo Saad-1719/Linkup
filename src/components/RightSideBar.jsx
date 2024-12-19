@@ -40,7 +40,8 @@ const RightSideBar = () => {
 				/>
 				<h3 className="font-medium flex gap-x-1 mx-0 my-1 text-center items-center justify-center text-lg">
 					{chatUser.userData.name}
-					<img src={assets.green_dot} alt="" />
+					{Date.now()-chatUser.userData.lastSeen <=70000 ?<img src={assets.green_dot} alt="" /> : " "}
+					
 				</h3>
 				<p className="text-sm opacity-80 ">{chatUser.userData.bio}</p>
 			</div>
