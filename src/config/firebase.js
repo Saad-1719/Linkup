@@ -2,7 +2,9 @@
 import { initializeApp } from "firebase/app";
 import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { getFirestore, setDoc, doc } from "firebase/firestore";
+import { useContext } from "react";
 import { toast } from "react-toastify";
+import { AppContext } from "../context/AppContext";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -40,7 +42,8 @@ const signup = async (username, email, password) => {
         await setDoc(doc(db, "chats", user.uid), {
             chatsData: []
         });
-toast.success("Account created successfully!");
+        toast.success("Account created successfully!");
+        
         return user; // Optionally return the user object
     } catch (error) {
         console.error(error);
