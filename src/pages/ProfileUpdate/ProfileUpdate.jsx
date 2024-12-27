@@ -131,8 +131,8 @@ const ProfileUpdate = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[url('/background.png')] bg-no-repeat flex items-center justify-center">
-        <div className="bg-white flex items-center justify-between min-w-[700px] border-4 rounded-lg px-10">
+      <div className="min-h-screen bg-[url('/background.jpg')] bg-no-repeat flex items-center justify-center">
+        <div className="bg-white bg-opacity-20 backdrop-blur-lg flex items-center justify-between min-w-[700px] border rounded-lg px-10">
           <div className="flex flex-col gap-5 p-10 w-full">
             <div className="h-6 bg-gray-400 rounded w-1/4 animate-pulse"></div>
             <div className="h-12 bg-gray-400 rounded-full w-12 animate-pulse"></div>
@@ -147,13 +147,13 @@ const ProfileUpdate = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[url('/background.png')] bg-no-repeat flex items-center justify-center">
-      <div className="bg-white flex items-center justify-between min-w-[700px] border-4 rounded-lg px-10 space-x-12">
+    <div className="min-h-screen bg-[url('/background.jpg')] bg-no-repeat flex items-center justify-center">
+      <div className="bg-white bg-opacity-20 backdrop-blur-lg flex items-center justify-between min-w-[700px] border rounded-lg px-10 space-x-12">
         <form className="flex flex-col gap-5 p-10" onSubmit={profileUpdate}>
-          <h3 className="font-medium text-lg">Profile Details</h3>
+          <h3 className="text-3xl font-bold">Profile Details</h3>
           <label
             htmlFor="avatar"
-            className="flex items-center gap-3 text-gray-400 cursor-pointer"
+            className="flex items-center gap-3 text-black cursor-pointer"
           >
             <input
               type="file"
@@ -179,19 +179,19 @@ const ProfileUpdate = () => {
             onChange={(e) => setName(e.target.value)}
             placeholder="Your name"
             required
-            className="p-3 min-w-72 border-[1px] border-gray-400 outline-blue-700 rounded-lg"
+            className="p-3 min-w-72 border border-solid rounded-md border-white/40 outline-blue-300 bg-white bg-opacity-10 backdrop-blur-md text-black placeholder-black/70"
           />
           <textarea
             placeholder="Write profile bio"
             required
             value={bio}
             onChange={(e) => setBio(e.target.value)}
-            className="p-3 min-w-72 border-[1px] border-gray-400 outline-blue-700 rounded-lg"
+            className="p-3 min-w-72 border border-solid rounded-md border-white/40 outline-blue-300 bg-white bg-opacity-10 backdrop-blur-md text-black placeholder-black/70"
           ></textarea>
           <button
             type="submit"
             disabled={uploading}
-            className="text-white bg-blue-600 p-2 cursor-pointer hover:bg-blue-700 transition-all ease-in-out disabled:opacity-50 rounded-lg"
+            className="px-2 py-3 rounded-md text-lg font-bold bg-white bg-opacity-10 backdrop-blur-md hover:bg-[#26a0da] transition-all text-white hover:text-black  border hover:border-none disabled:opacity-50"
           >
             {uploading ? "Updating..." : "Save"}
           </button>

@@ -2,54 +2,50 @@ import React, { useContext, useState } from "react";
 import assets from "../assets/assets";
 import { useNavigate } from "react-router-dom";
 import { arrayUnion, collection, doc, getDocs, query, serverTimestamp, setDoc, updateDoc, where } from "firebase/firestore";
-import { db } from "../config/firebase";
+import { db,logout } from "../config/firebase";
 import { AppContext } from "../context/AppContext";
 import { toast } from "react-toastify";
 
 const LeftSideBar = () => {
   const navigate = useNavigate();
-  const { userData,chatData,chatUser,setChatUser,setMessagesId,messagesId } = useContext(AppContext);
-  const [user, setUser] = useState(null);
-  const [showSearch, setShowSearch] = useState(false);
+  const { userData, chatData, chatUser, setChatUser, setMessagesId, messagesId } = useContext(AppContext);
+  const [searchInput, setSearchInput] = useState("");
+  const [searchResults, setSearchResults] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const inputHandler = async (e) => {
     try {
       const input = e.target.value;
+      setSearchInput(input);
+      
       if (input) {
-        setShowSearch(true);
         const userRef = collection(db, "users");
         const q = query(userRef, where("username", "==", input.toLowerCase()));
         const querySnap = await getDocs(q);
+        
         if (!querySnap.empty && querySnap.docs[0].data().id !== userData.id) {
-			let userExist=false
-			chatData.map((user) =>
-			{
-				if (user.rId === querySnap.docs[0].data().id)
-				{
-					userExist = true;
-
-				  }
-			})
-			if (!userExist)
-			{
-
-				setUser(querySnap.docs[0].data());
-			}
+          const foundUser = querySnap.docs[0].data();
+          const existingChat = chatData.find(chat => chat.rId === foundUser.id);
+          setSearchResults({
+            ...foundUser,
+            existingChat
+          });
         } else {
-          setUser(null);
+          setSearchResults(null);
         }
       } else {
-        setShowSearch(false);
+        setSearchResults(null);
       }
     } catch (error) {
       console.error("Error in inputHandler:", error);
     }
   };
 
-  const addChat = async () => {
+  const addChat = async (user) => {
     const messagesRef = collection(db, "messages");
     const chatsRef = collection(db, "chats");
     try {
+      setIsLoading(true);
       const newMessageRef = doc(messagesRef);
       await setDoc(newMessageRef, {
         createdAt: serverTimestamp(),
@@ -75,20 +71,50 @@ const LeftSideBar = () => {
           messageSeen: true
         })
       });
+
+      const newChat = {
+        messageId: newMessageRef.id,
+        rId: user.id,
+        userData: user
+      };
+      setChat(newChat);
+      
     } catch (error) {
       toast.error(error.message);
-      console.error("Error in addChat:", error.message);
+      console.error("Error in addChat:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-	const setChat = async (item) =>
-	{
-		setMessagesId(item.messageId);
-		setChatUser(item);
-	}
-	
+  const setChat = (item) => {
+    setMessagesId(item.messageId);
+    setChatUser(item);
+  };
+
+  const handleUserSelect = async () => {
+    if (!searchResults || isLoading) return;
+
+    if (searchResults.existingChat) {
+      setChat({
+        messageId: searchResults.existingChat.messageId,
+        rId: searchResults.id,
+        userData: searchResults
+      });
+    } else {
+      await addChat(searchResults);
+    }
+    
+    setSearchInput("");
+    setSearchResults(null);
+  };
+
+  const isActiveChat = (item) => {
+    return messagesId === item.messageId;
+  };
+
   return (
-    <div className="bg-gray-950 text-white h-[85vh]">
+    <div className="bg-gray-950 rounded-tl-lg rounded-bl-lg  text-white h-[85vh] ">
       <div className="p-5">
         <div className="flex justify-between items-center">
           <img src={assets.logo} alt="" className="w-fit h-12" />
@@ -110,7 +136,7 @@ const LeftSideBar = () => {
 
               <hr className="border-none h-[1px] bg-gray-500 my-2" />
 
-              <p className="text-sm cursor-pointer hover:bg-gray-200 px-2 py-3 rounded-lg transition-all ease-in-out duration-300 transform group-hover:scale-105">
+              <p className="text-sm cursor-pointer hover:bg-gray-200 px-2 py-3 rounded-lg transition-all ease-in-out duration-300 transform group-hover:scale-105" onClick={()=>logout()}>
                 Logout
               </p>
             </div>
@@ -122,39 +148,51 @@ const LeftSideBar = () => {
           <input
             type="text"
             placeholder="Search Here"
-            className="bg-transparent border-none outline-none text-sm text-white placeholder:text-white"
+            value={searchInput}
+            className="bg-transparent border-none outline-none text-sm text-white placeholder:text-white w-full"
             onChange={inputHandler}
+            disabled={isLoading}
           />
         </div>
       </div>
-      <div className="flex flex-col h-[75%] overflow-y-scroll no-scrollbar ">
-        {showSearch && user ? (
-          <div className="flex items-center gap-3 px-3 py-2 cursor-pointer text-md hover:bg-slate-900 transition-all" onClick={addChat}>
-            <img src={user.avatar} alt="" className="w-9  h-auto aspect-square rounded-full"/>
-            <p>{user.name}</p>
-            
+      <div className="flex flex-col h-[75%] overflow-y-scroll no-scrollbar">
+        {searchResults ? (
+          <div 
+            onClick={handleUserSelect}
+            className={`flex items-center gap-3 px-3 py-2 cursor-pointer text-md hover:bg-slate-900 transition-all relative ${
+              isLoading ? 'opacity-70 cursor-wait' : ''
+            }`}
+          >
+            <img src={searchResults.avatar} alt="" className="w-9 h-auto aspect-square rounded-full"/>
+            <p>{searchResults.name}</p>
+            {isLoading && (
+              <div className="absolute right-4 flex items-center">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+              </div>
+            )}
           </div>
         ) : (
-          chatData
-            .map((item, index) => (
-				<div
-					onClick={()=>setChat(item)}
-                key={index}
-                className="flex items-center gap-3 px-3 py-2 cursor-pointer text-md hover:bg-slate-900 transition-all"
-              >
-                <img
-                  src={item.userData.avatar}
-                  alt=""
-                  className="w-9 aspect-square  rounded-full"
-                />
-                <div className="flex flex-col ">
-						<p>{item.userData.name}</p>
-                  <span className="text-gray-500 text-sm ">
-                    {item.lastMessage}
-                  </span>
-                </div>
+          chatData.map((item, index) => (
+            <div
+              onClick={() => setChat(item)}
+              key={index}
+              className={`flex items-center gap-3 px-3 py-2 cursor-pointer text-md transition-all ${
+                isActiveChat(item) ? 'bg-slate-800' : 'hover:bg-slate-900'
+              }`}
+            >
+              <img
+                src={item.userData.avatar}
+                alt=""
+                className="w-9 aspect-square rounded-full"
+              />
+              <div className="flex flex-col">
+                <p>{item.userData.name}</p>
+                <span className="text-gray-500 text-sm">
+                  {item.lastMessage}
+                </span>
               </div>
-            ))
+            </div>
+          ))
         )}
       </div>
     </div>
@@ -162,4 +200,3 @@ const LeftSideBar = () => {
 };
 
 export default LeftSideBar;
-

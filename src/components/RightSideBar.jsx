@@ -31,7 +31,7 @@ const RightSideBar = () => {
 	};
 
 	return chatUser ? (
-		<div className="text-white bg-slate-950 relative h-[85vh] overflow-y-scroll no-scrollbar">
+		<div className="text-white bg-slate-950 rounded-tr-lg rounded-br-lg relative h-[85vh] overflow-y-scroll no-scrollbar">
 			<div className="pt-14 text-center max-w-[70%] m-auto flex flex-col items-center">
 				<img
 					src={chatUser.userData.avatar}
@@ -72,7 +72,7 @@ const RightSideBar = () => {
 					)}
 				</div>
 				<button
-					className=" bg-sky-800 hover:bg-sky-600 transition-all text-xl rounded-lg items-end justify-center mt-5 px-20 py-2 leading-2 absolute bottom-5 left-[50%] translate-x-[-50%] "
+					className=" rounded-md text-lg font-bold bg-white bg-opacity-10 backdrop-blur-md hover:bg-[#26a0da] transition-all text-white hover:text-black  border hover:border-none items-end justify-center mt-5 px-20 py-2 leading-2 absolute bottom-5 left-[50%] translate-x-[-50%] "
 					onClick={() => logout()}
 				>
 					Logout
@@ -82,7 +82,7 @@ const RightSideBar = () => {
 	) : (
 		<div className="text-white bg-slate-950 relative h-[85vh] overflow-y-scroll no-scrollbar">
 			<button
-				className=" bg-sky-800 hover:bg-sky-600 transition-all text-xl rounded-lg items-end justify-center mt-5 px-20 py-2 leading-2 absolute bottom-5 left-[50%] translate-x-[-50%] "
+				className=" rounded-md text-lg font-bold bg-white bg-opacity-10 backdrop-blur-md hover:bg-[#26a0da] transition-all text-white hover:text-black  border hover:border-none items-end justify-center mt-5 px-20 py-2 leading-2 absolute bottom-5 left-[50%] translate-x-[-50%] "
 				onClick={() => logout()}
 			>
 				Logout

@@ -47,7 +47,6 @@ const signup = async (username, email, password) =>
 
         return user; // Optionally return the user object
     } catch (error) {
-        console.error(error);
         toast.error(error.code.split('/')[1].split('-').join(" "));
         throw error; // Re-throw the error for handling in the calling function
     }
