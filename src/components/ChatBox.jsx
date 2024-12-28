@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState, useCallback } from "react";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import assets from "../assets/assets";
 import { AppContext } from "../context/AppContext";
@@ -21,6 +22,7 @@ const ChatBox = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [currentImage, setCurrentImage] = useState(0);
   const [isViewerOpen, setIsViewerOpen] = useState(false);
+  const [parent] = useAutoAnimate();
 
   // Create a state to store image URLs
   const [msgImages, setMsgImages] = useState([]);
@@ -269,14 +271,14 @@ const ChatBox = () => {
   };
 
   return chatUser ? (
-    <div className="h-[85vh] relative bg-sky-200">
+    <div className="h-[85vh] relative bg-sky-200" >
       {/* Loading Indicator */}
       {isLoading && (
         <span className="loader absolute top-[50%] left-[50%] z-50"></span>
       )}
 
       {/* Chat Header */}
-      <div className="py-3 px-4 flex items-center gap-3 border-b-black border-2">
+      <div className="py-3 px-4 flex items-center gap-3 border-b-black border-2" >
         <img
           src={chatUser.userData.avatar}
           alt=""
@@ -299,7 +301,7 @@ const ChatBox = () => {
       </div>
 
       {/* Chat Area */}
-      <div className="pb-[50px] h-[calc(100%-70px)] overflow-y-scroll flex flex-col-reverse no-scrollbar">
+      <div className="pb-[50px] h-[calc(100%-70px)] overflow-y-scroll flex flex-col-reverse no-scrollbar" ref={parent}>
         {messages.map((msg, index) =>
           msg.sId === userData.id ? (
             <div

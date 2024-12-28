@@ -1,4 +1,5 @@
 import React, { useContext, useState } from "react";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 import assets from "../assets/assets";
 import { useNavigate } from "react-router-dom";
 import { arrayUnion, collection, doc, getDocs, query, serverTimestamp, setDoc, updateDoc, where } from "firebase/firestore";
@@ -12,6 +13,10 @@ const LeftSideBar = () => {
   const [searchInput, setSearchInput] = useState("");
   const [searchResults, setSearchResults] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [parent] = useAutoAnimate({
+    duration: 500, // Animation duration in milliseconds
+    easing: 'ease-in-out', // Easing function
+  });
 
   const inputHandler = async (e) => {
     try {
@@ -114,7 +119,7 @@ const LeftSideBar = () => {
   };
 
   return (
-    <div className="bg-gray-950 rounded-tl-lg rounded-bl-lg  text-white h-[85vh] ">
+    <div className="bg-gray-950 rounded-tl-lg rounded-bl-lg  text-white h-[85vh] " >
       <div className="p-5">
         <div className="flex justify-between items-center">
           <img src={assets.logo} alt="" className="w-fit h-12" />
@@ -155,7 +160,7 @@ const LeftSideBar = () => {
           />
         </div>
       </div>
-      <div className="flex flex-col h-[75%] overflow-y-scroll no-scrollbar">
+      <div className="flex flex-col h-[75%] overflow-y-scroll no-scrollbar" ref={parent}>
         {searchResults ? (
           <div 
             onClick={handleUserSelect}

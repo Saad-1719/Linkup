@@ -3,12 +3,17 @@ import assets from "../assets/assets";
 import { logout } from "../config/firebase";
 import ImageViewer from "react-simple-image-viewer";
 import { AppContext } from "../context/AppContext";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 const RightSideBar = () => {
 	const { chatUser, messages } = useContext(AppContext);
 	const [msgImages, setMsgImages] = useState([]);
 	const [currentImage, setCurrentImage] = useState(0);
 	const [isViewerOpen, setIsViewerOpen] = useState(false);
+	const [parent] = useAutoAnimate({
+		duration: 500, // Animation duration in milliseconds
+		easing: 'ease-in-out', // Easing function
+	  });
 
 	useEffect(() => {
 		let tempVar = [];
@@ -31,7 +36,7 @@ const RightSideBar = () => {
 	};
 
 	return chatUser ? (
-		<div className="text-white bg-slate-950 rounded-tr-lg rounded-br-lg relative h-[85vh] overflow-y-scroll no-scrollbar">
+		<div className="text-white bg-slate-950 rounded-tr-lg rounded-br-lg relative h-[85vh] overflow-y-scroll no-scrollbar" ref={parent}>
 			<div className="pt-14 text-center max-w-[70%] m-auto flex flex-col items-center">
 				<img
 					src={chatUser.userData.avatar}
