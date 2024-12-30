@@ -131,7 +131,7 @@ const LeftSideBar = () => {
               className="h-8 w-auto cursor-pointer opacity-60 group-hover:opacity-100 transition-opacity duration-300 ease-in-out"
             />
 
-            <div className="absolute top-full right-0 w-32 py-3 px-3 rounded-lg text-center bg-white text-black hidden group-hover:block opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out">
+            <div className="absolute top-full right-0 w-32 py-3 px-3 z-10 rounded-lg text-center bg-white text-black hidden group-hover:block opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out">
               <p
                 className="text-sm cursor-pointer hover:bg-gray-200 px-2 py-3 rounded-lg transition-all ease-in-out duration-300 transform group-hover:scale-105"
                 onClick={() => navigate("/profile")}

@@ -76,7 +76,7 @@ const Login = () => {
   />
   <button
     type="submit"
-    className={`px-2 py-3 rounded-md text-lg font-bold bg-white bg-opacity-10 backdrop-blur-md hover:bg-[#26a0da] transition-all text-white hover:text-black  border hover:border-none ${
+    className={`px-2 py-3 rounded-md text-lg font-bold bg-white bg-opacity-10 backdrop-blur-md hover:bg-[#26a0da] transition-all  ease-linear text-white hover:text-black  border hover:border-none ${
       isLoading ? 'opacity-50 cursor-not-allowed' : ''
     }`}
     disabled={isLoading}

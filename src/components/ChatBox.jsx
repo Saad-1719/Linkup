@@ -34,10 +34,10 @@ const ChatBox = () => {
     }
   };
 
-  // Initialize Gemini AI
   const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
 
-  // Summarization function
+  // Summarize message function 
+
   const summarizeMessage = async (message) => {
     try {
       setIsLoading(true);
@@ -57,13 +57,13 @@ const ChatBox = () => {
       toast.error("Failed to generate summary", {
         position: "top-right",
       });
-      console.error(error);
     } finally {
       setIsLoading(false);
     }
   };
 
   // Smart Reply function
+
   const generateSmartReply = async (message) => {
     try {
       setIsLoading(true);
@@ -76,13 +76,11 @@ const ChatBox = () => {
       const result = await model.generateContent(prompt);
       const reply = await result.response.text();
 
-      // Set the generated reply in the input field
       setInput(reply);
     } catch (error) {
       toast.error("Failed to generate smart reply", {
         position: "bottom-right",
       });
-      console.error(error);
     } finally {
       setIsLoading(false);
     }
@@ -362,7 +360,7 @@ const ChatBox = () => {
                         className={
                           isLoading
                             ? "hidden"
-                            : "absolute bottom-full left-0 mb-0 z-10 bg-white border rounded-lg shadow-lg text-black text-xs"
+                            : "absolute bottom-full left-0 mb-0 z-10 bg-white border rounded-lg shadow-lg min-w-40 text-center text-black text-xs"
                         }
                       >
                         <div
