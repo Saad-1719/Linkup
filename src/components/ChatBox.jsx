@@ -291,11 +291,11 @@ const ChatBox = () => {
           /> :" "}
           
         </p>
-        <img
+        {/* <img
           src={assets.help_icon}
           alt=""
           className="rounded-full w-6 h-auto"
-        />
+        /> */}
       </div>
 
       {/* Chat Area */}
